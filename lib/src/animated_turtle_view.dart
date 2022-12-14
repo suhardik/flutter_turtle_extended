@@ -20,8 +20,7 @@ class AnimatedTurtleView extends StatefulWidget {
   /// Whether the painting is complex enough to benefit from caching.
   final bool isComplex;
 
-  /// The duration of the animation. 3 seconds by default.
-  final Duration animationDuration;
+  final AnimationController controller;
 
   /// Creates a new instance.
   const AnimatedTurtleView({
@@ -30,7 +29,7 @@ class AnimatedTurtleView extends StatefulWidget {
     this.child,
     this.isComplex = false,
     this.size = Size.zero,
-    this.animationDuration = const Duration(seconds: 3),
+    required this.controller,
   }) : super(key: key);
 
   @override
@@ -40,19 +39,18 @@ class AnimatedTurtleView extends StatefulWidget {
 class _AnimatedTurtleViewState extends State<AnimatedTurtleView>
     with SingleTickerProviderStateMixin {
   List<Instruction> _instructions = [];
-  late AnimationController _controller;
+  // late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
     _instructions = TurtleCompiler.compile(widget.commands);
-    _controller =
-        AnimationController(duration: widget.animationDuration, vsync: this);
+    // _controller = AnimationController(duration: Duration(seconds: 3), vsync: this);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    // _controller.dispose();
     super.dispose();
   }
 
@@ -66,12 +64,14 @@ class _AnimatedTurtleViewState extends State<AnimatedTurtleView>
 
   @override
   Widget build(BuildContext context) {
-    _controller.forward(from: 0);
+    // _controller.forward(from: 0);
     return AnimatedBuilder(
         child: widget.child,
-        animation: _controller,
+        // animation: _controller,
+        animation: widget.controller,
         builder: (context, child) {
-          final value = _controller.value;
+          // final value = _controller.value;
+          final value = widget.controller.value;
           final instructions =
               _instructions.sublist(0, (_instructions.length * value).toInt());
           return CustomPaint(
